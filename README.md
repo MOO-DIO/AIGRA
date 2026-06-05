@@ -1,201 +1,234 @@
-# AIGRA
+# AIGRA: Agentic Item Generation, Review, and Analysis
 
-**AIGRA** stands for **Agentic Item Generation, Review, and Analysis**.
+`AIGRA` is an R package for agentic assessment item generation, review, and reporting. It supports structured item-bank templates, clone generation, automated review, diagram-aware item workflows, and HTML reporting.
 
-AIGRA is an R package interface to a Python backend for generating, solving, reviewing, and exporting assessment items using retrieval-augmented multi-agent AI workflows.
+The package is designed for researchers, assessment developers, psychometricians, and educators who want to generate and review assessment item clones from structured source items.
 
-## Core workflow
+## Installation
 
-AIGRA supports the following pipeline:
-
-1. Parse source assessment items from a PDF, CSV, or Excel item bank.
-2. Build a retrieval-augmented item store.
-3. Retrieve similar examples by topic, difficulty, objective, and style.
-4. Generate new clone items in a target language.
-5. Solve generated items independently.
-6. Review generated items with a critic agent.
-7. Apply rule-based safety checks.
-8. Export results to CSV and JSONL.
-9. Summarise, plot, and report output quality.
-
-## Backend
-
-The current Python backend lives at:
+Install the stable version from CRAN:
 
 ```r
-"C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND"
+install.packages("AIGRA")
+library(AIGRA)
 ```
 
-## Development setup
+The development version can be installed from GitHub:
 
 ```r
-devtools::load_all()
+install.packages("remotes")
+remotes::install_github("MOO-DIO/AIGRA")
+library(AIGRA)
+```
 
-aigra_set_backend(
-  backend_path = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND"
-)
+## Important note about the backend
 
+The CRAN package provides the R interface. Full LLM-based generation currently requires the external Python backend, usually named `AIGRA_BACKEND`.
+
+A typical local setup is:
+
+```r
+library(AIGRA)
+
+Sys.setenv(AIGRA_BACKEND_PATH = "C:/AIGRA_BACKEND")
+Sys.setenv(RETICULATE_PYTHON = "C:/AIGRA_BACKEND/.venv/Scripts/python.exe")
+
+aigra_set_backend("C:/AIGRA_BACKEND")
 aigra_status()
 ```
 
-## Ensure Python backend
+In version `0.1.2` and later, users can also call:
 
 ```r
-ensure_aigra_python(
-  backend_path = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND"
-)
+aigra_backend_help()
+```
 
-aigra_python_info(
-  backend_path = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND"
+to see backend setup guidance.
+
+## API keys
+
+API keys can be supplied from R. For example:
+
+```r
+Sys.setenv(GEMINI_API_KEY = "your_gemini_key")
+Sys.setenv(ANTHROPIC_API_KEY = "your_anthropic_key")
+Sys.setenv(OPENAI_API_KEY = "your_openai_key")
+Sys.setenv(GROQ_API_KEY = "your_groq_key")
+```
+
+In version `0.1.2` and later, keys can also be supplied directly in the generation wrapper:
+
+```r
+out <- aigra_generate_items(
+  file_path = template_file,
+  model = "sonnet",
+  anthropic.API = "your_anthropic_key",
+  backend_path = "C:/AIGRA_BACKEND",
+  source_language = "English",
+  target_language = "English",
+  subject = "Mathematics",
+  exam = "AIGRA demonstration",
+  n_clones = 1,
+  max_items = 2
 )
 ```
 
-## Parse PDF source items
+Do not share real API keys in scripts, screenshots, examples, or public repositories.
+
+## Preparing an item template
+
+`AIGRA` uses a tabular item-bank template. Each row represents one original source item. A basic template should contain columns such as:
+
+```text
+item_id
+stem
+option_A
+option_B
+option_C
+option_D
+correct_answer
+difficulty
+grade
+section
+topic
+objective
+subject
+exam
+source_language
+target_language
+source_diagram_required
+source_diagram_path
+source_diagram_type
+```
+
+For clone generation, the source item should provide enough information for the generated item to preserve:
+
+```text
+same assessed skill
+same item format
+same reasoning pattern
+same difficulty level
+same response structure
+same diagram dependency, if applicable
+same language requirements
+```
+
+## Minimal workflow
 
 ```r
-items <- aigra_parse_items(
-  source_language = "Russian",
-  subject = "Physics",
-  exam = "Kazakhstan UNT"
-)
+library(AIGRA)
+
+template_file <- file.choose()
+
+items <- aigra_parse_tabular_items(template_file)
 
 nrow(items)
-head(items)
-```
 
-## Create CSV or Excel item-bank templates
-
-```r
-template <- aigra_template_items()
-template
-
-csv_path <- aigra_write_template_csv(
-  file = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND/data/aigra_item_template.csv",
-  overwrite = TRUE
-)
-
-xlsx_path <- aigra_write_template_excel(
-  file = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND/data/aigra_item_template.xlsx",
-  overwrite = TRUE
-)
-```
-
-## Required tabular item-bank columns
-
-CSV and Excel item banks should include these columns:
-
-- item_id
-- stem
-- option_A
-- option_B
-- option_C
-- option_D
-- correct_answer
-- difficulty
-- grade
-- section
-- topic
-- objective
-- source_language
-- subject
-- exam
-
-Required minimum columns are:
-
-- stem
-- option_A
-- option_B
-- option_C
-- option_D
-- correct_answer
-
-## Parse CSV or Excel item banks
-
-```r
-tab_items <- aigra_parse_tabular_items(
-  file_path = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND/data/aigra_item_template.csv",
+out <- aigra_generate_tabular_items(
+  file_path = template_file,
+  provider = "gemini",
+  model = "gemini-3.1-pro-preview",
   source_language = "English",
-  subject = "Physics",
-  exam = "Demo Item Bank"
-)
-
-nrow(tab_items)
-head(tab_items)
-```
-
-## Generate from PDF
-
-Set your provider API key first.
-
-```r
-Sys.setenv(OPENAI_API_KEY = "your_openai_key_here")
-
-result <- aigra_generate_items(
-  provider = "openai",
-  model = "gpt-4.1",
   target_language = "English",
+  subject = "Mathematics",
+  exam = "AIGRA trial item bank",
   n_clones = 1,
-  max_items = 1
+  max_items = 2
 )
 
-View(result)
+out
 ```
 
-## Generate from CSV or Excel
+## Claude example
 
 ```r
-result <- aigra_generate_tabular_items(
-  file_path = "C:/Users/OMOPEKUNOLA MOSES O/AIGRA_BACKEND/data/aigra_item_template.csv",
-  provider = "openai",
-  model = "gpt-4.1",
+out_claude <- aigra_generate_items(
+  file_path = template_file,
+  model = "sonnet",
+  anthropic.API = "your_anthropic_key",
+  backend_path = "C:/AIGRA_BACKEND",
+  source_language = "English",
+  target_language = "English",
+  subject = "Mathematics",
+  exam = "AIGRA Claude demonstration",
+  n_clones = 1,
+  max_items = 2
+)
+```
+
+## Gemini example
+
+```r
+out_gemini <- aigra_generate_items(
+  file_path = template_file,
+  model = "gemini",
+  gemini.API = "your_gemini_key",
+  backend_path = "C:/AIGRA_BACKEND",
   source_language = "English",
   target_language = "English",
   subject = "Physics",
-  exam = "Demo Item Bank",
+  exam = "AIGRA Gemini demonstration",
   n_clones = 1,
-  max_items = 1
+  max_items = 2
 )
-
-View(result)
 ```
 
-## Supported providers
+## Creating reports
 
-AIGRA currently supports:
-
-- OpenAI
-- Gemini
-- Groq
-- Anthropic/Claude, through the provider-flexible backend client
-
-Example provider keys:
+After item generation, create a review report:
 
 ```r
-Sys.setenv(OPENAI_API_KEY = "your_openai_key_here")
-Sys.setenv(GEMINI_API_KEY = "your_gemini_key_here")
-Sys.setenv(GROQ_API_KEY = "your_groq_key_here")
-Sys.setenv(ANTHROPIC_API_KEY = "your_anthropic_key_here")
-```
-
-## Read outputs
-
-```r
-aigra_list_outputs()
-
-latest <- aigra_read_latest_output()
-View(latest)
-```
-
-## Summarise output quality
-
-```r
-aigra_print_summary()
-aigra_plot_summary()
-
-report_path <- aigra_write_report()
+report_path <- aigra_write_report(out)
 browseURL(report_path)
 ```
 
-## Development status
+Create an administration HTML file:
 
-AIGRA is currently a research prototype. Generated assessment items should be reviewed by subject matter experts before operational use.
+```r
+admin_file <- aigra_write_admin_html(
+  out,
+  title = "AIGRA Generated Assessment Items",
+  include_key = TRUE,
+  include_metadata = TRUE,
+  only_accepted = FALSE
+)
+
+browseURL(admin_file)
+```
+
+## Diagram-based items
+
+For items that require diagrams:
+
+```r
+result_fixed <- aigra_apply_diagram_agent(out)
+result_fixed <- aigra_repair_diagram_prompts(result_fixed)
+
+result2 <- aigra_generate_result_diagrams_auto(
+  result_fixed,
+  provider = "gemini",
+  model = "gemini-3-pro-image-preview",
+  max_images = 2,
+  overwrite = TRUE
+)
+```
+
+At present, Claude can be used for item text generation, while Gemini can be used for image generation.
+
+## Quality review
+
+Generated items should be reviewed before use. Check:
+
+```text
+Is the clone faithful to the source item?
+Is the key correct?
+Are the distractors plausible?
+Is the language appropriate?
+Is the diagram accurate and necessary?
+Does the solver answer match the key?
+Is the item free from prompt leakage?
+```
+
+## Citation
+
+If you use `AIGRA`, please cite the package and related methodological work. A formal citation entry will be added in a future release.
