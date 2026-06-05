@@ -1,0 +1,104 @@
+---
+title: "AIGRA Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{AIGRA Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = '#>'
+)
+```
+
+# Overview
+
+AIGRA stands for **Agentic Item Generation, Review, and Analysis**.
+
+The package provides tools for working with assessment item generation workflows, including item-bank templates, validation, Python-backed generation workflows, multimodal diagram generation, quality summaries, and HTML reports.
+
+External artificial intelligence services require user-supplied API keys and are not called in this vignette.
+
+# Load AIGRA
+
+```{r}
+library(AIGRA)
+```
+
+# Create an item-bank template
+
+```{r}
+template <- aigra_template_items()
+template
+```
+
+# Validate a bundled example item bank
+
+```{r}
+example_path <- aigra_example_item_bank()
+validation <- aigra_validate_tabular_items(example_path)
+aigra_print_validation(validation)
+```
+
+# Supported image models
+
+```{r}
+aigra_image_models()
+```
+
+# Backend configuration
+
+The full AIGRA generation workflow uses an optional Python backend.
+
+```{r, eval = FALSE}
+Sys.setenv(AIGRA_BACKEND_PATH = 'path/to/AIGRA_BACKEND')
+aigra_set_backend()
+aigra_status()
+```
+
+# AI-assisted generation
+
+Generation functions require an installed backend and user-supplied API keys. They are shown here but not evaluated during package checks.
+
+```{r, eval = FALSE}
+Sys.setenv(GEMINI_API_KEY = 'your_gemini_key')
+
+result <- aigra_generate_tabular_items(
+  file_path = example_path,
+  provider = 'gemini',
+  model = 'gemini-3.1-pro-preview',
+  source_language = 'English',
+  target_language = 'English',
+  subject = 'Physics',
+  exam = 'Demo Item Bank',
+  n_clones = 1,
+  max_items = 1
+)
+```
+
+# Diagram generation
+
+```{r, eval = FALSE}
+result2 <- aigra_generate_result_diagrams(
+  result,
+  provider = 'gemini',
+  model = 'gemini-3-pro-image-preview',
+  only_required = FALSE,
+  force = TRUE,
+  max_images = 1
+)
+
+aigra_show_result_diagram(result2, 1)
+```
+
+# Reporting
+
+```{r, eval = FALSE}
+aigra_print_summary(result)
+aigra_plot_summary(result)
+report_path <- aigra_write_report(result)
+browseURL(report_path)
+```

@@ -1,0 +1,13 @@
+^AIGRA\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^cran-comments\.md$
+^vignettes$
+^\.Rhistory$
+^\.git$
+^\.gitignore$
+^.*\.Rproj$
+^AIGRA\.Rcheck$
+^\.\.Rcheck$
+^AIGRA_.*\.tar\.gz$
+^source_docs$

@@ -1,0 +1,3 @@
+"item_id","stem","option_A","option_B","option_C","option_D","correct_answer","difficulty","grade","section","topic","objective","source_language","subject","exam"
+"ITEM001","A 10 N force acts on a 2 kg object. What is the acceleration?","2 m/s^2","5 m/s^2","10 m/s^2","20 m/s^2","B","B","9","Mechanics","Newton's second law","Apply F = ma","English","Physics","Demo Item Bank"
+"ITEM002","Which physical quantity is measured in joules?","Power","Energy","Force","Pressure","B","A","8","Mechanics","Energy","Identify SI units","English","Physics","Demo Item Bank"

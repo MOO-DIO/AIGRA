@@ -1,0 +1,14 @@
+.Rhistory
+.RData
+.Rproj.user/
+*.Rcheck/
+AIGRA.Rcheck/
+..Rcheck/
+*.tar.gz
+outputs/
+.env
+*.key
+.Rproj.user
+.httr-oauth
+.DS_Store
+.quarto
