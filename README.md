@@ -1,5 +1,7 @@
 # AIGRA: Agentic Item Generation, Review, and Analysis
 
+**Current CRAN release:** `AIGRA 0.1.2`
+
 `AIGRA` is an R package for agentic assessment item generation, review, and reporting. It supports structured item-bank templates, clone generation, automated review, diagram-aware item workflows, and HTML reporting.
 
 The package is designed for researchers, assessment developers, psychometricians, and educators who want to generate and review assessment item clones from structured source items.
