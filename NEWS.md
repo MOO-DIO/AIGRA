@@ -1,17 +1,8 @@
-# AIGRA 0.1.0
+# AIGRA 0.1.2
 
-## Initial development release
-
-* Added R interface for AIGRA: Agentic Item Generation, Review, and Analysis.
-* Added support for connecting to a Python backend through `reticulate`.
-* Added PDF parsing workflow for source assessment items.
-* Added CSV and Excel item-bank templates.
-* Added CSV and Excel item-bank validation.
-* Added CSV and Excel item-bank parsing.
-* Added item generation workflows for PDF and tabular item banks.
-* Added multi-provider text model support for Gemini, OpenAI, Groq, and Anthropic.
-* Added multimodal diagram generation support.
-* Added multi-model image generation support for Gemini and OpenAI image models.
-* Added functions for quality summaries, plots, and HTML reports.
-* Added CRAN-safe bundled example item bank.
-* Added portable backend-path configuration through `AIGRA_BACKEND_PATH`.
+* Added `aigra_generate_items()` as a simplified generation wrapper around `aigra_generate_tabular_items()`.
+* Added direct API-key arguments: `gemini.API`, `openai.API`, `groq.API`, and `anthropic.API`.
+* Added `aigra_set_api_keys()` so provider keys can be supplied directly from R.
+* Added `aigra_backend_help()` to provide clearer guidance for configuring the external `AIGRA_BACKEND` folder.
+* Improved first-time user guidance for backend configuration and API-key handling.
+* Fixed documentation and namespace issues related to the new user-facing functions.
