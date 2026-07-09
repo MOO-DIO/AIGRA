@@ -5,10 +5,10 @@
 #' Scientific symbols and units are preserved.
 #'
 #' @param result A data frame returned by AIGRA.
-#' @param target_language Target language for visible diagram labels.
 #' @param provider Text LLM provider.
 #' @param model Text LLM model.
 #'
+#' @param target_language Target language for translated diagram prompts.
 #' @return Updated result data frame.
 #' @export
 aigra_translate_diagram_prompts <- function(

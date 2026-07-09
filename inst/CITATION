@@ -1,7 +1,28 @@
+citHeader('To cite AIGRA in publications, please use:')
+
 bibentry(
-  bibtype = "Manual",
-  title = "AIGRA: Agentic Item Generation, Review, and Analysis",
-  author = person("Moses O.", "Omopekunola"),
-  year = "2026",
-  note = "R package version 0.1.0"
+  bibtype = 'Manual',
+  title = 'AIGRA: Agentic Item Generation, Review, and Analysis',
+  author = c(
+    person(given = c('Moses', 'Oluoke'), family = 'Omopekunola'),
+    person(given = 'Nurseit', family = 'Baizhanov'),
+    person(given = c('Elena', 'Yu.'), family = 'Kardanova')
+  ),
+  year = '2026',
+  note = 'R package version 0.2.0',
+  url = 'https://github.com/MOO-DIO/AIGRA'
+)
+
+bibentry(
+  bibtype = 'Unpublished',
+  title = 'AIGRA: Agentic Item Generation, Review, and Analysis for Educational Assessment',
+  author = c(
+    person(given = c('Moses', 'Oluoke'), family = 'Omopekunola'),
+    person(given = 'Nurseit', family = 'Baizhanov'),
+    person(given = c('Elena', 'Yu.'), family = 'Kardanova')
+  ),
+  year = '2026',
+  note = 'Available at SSRN',
+  url = 'https://ssrn.com/abstract=6960175',
+  doi = '10.2139/ssrn.6960175'
 )

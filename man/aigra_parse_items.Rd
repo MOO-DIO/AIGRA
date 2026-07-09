@@ -12,13 +12,13 @@ aigra_parse_items(
 )
 }
 \arguments{
-\item{pdf_path}{Path to the source item-bank PDF. Defaults to backend data/Kz.pdf.}
+\item{pdf_path}{Path to the source PDF file containing assessment items.}
 
-\item{source_language}{Language of the source item bank.}
+\item{source_language}{Source language of the input assessment items.}
 
-\item{subject}{Subject name.}
+\item{subject}{Subject area of the assessment items.}
 
-\item{exam}{Examination name.}
+\item{exam}{Examination, assessment, or project name.}
 }
 \value{
 A data frame of parsed assessment items.

@@ -40,11 +40,11 @@ aigra_status <- function(
 #' Parses a supported assessment-item PDF through the AIGRA Python backend
 #' and returns a data frame of source items.
 #'
-#' @param pdf_path Path to the source item-bank PDF. Defaults to backend data/Kz.pdf.
-#' @param source_language Language of the source item bank.
-#' @param subject Subject name.
-#' @param exam Examination name.
 #'
+#' @param pdf_path Path to the source PDF file containing assessment items.
+#' @param source_language Source language of the input assessment items.
+#' @param subject Subject area of the assessment items.
+#' @param exam Examination, assessment, or project name.
 #' @return A data frame of parsed assessment items.
 #' @export
 aigra_parse_items <- function(
@@ -67,17 +67,8 @@ aigra_parse_items <- function(
 #' Runs the AIGRA Python backend pipeline to generate, solve, review,
 #' and export assessment items.
 #'
-#' @param pdf_path Path to source item-bank PDF. Defaults to backend data/Kz.pdf.
-#' @param target_language Language for generated items.
-#' @param n_clones Number of clones per source item.
-#' @param max_items Maximum number of source items to process.
 #' @param provider LLM provider. Currently usually "groq".
 #' @param model LLM model name.
-#' @param source_language Language of the source item bank.
-#' @param review_language Language for review comments.
-#' @param subject Subject name.
-#' @param exam Examination name.
-#' @param read_csv If TRUE, returns the latest CSV output as a data frame.
 #'
 #' @return A data frame if read_csv is TRUE; otherwise invisibly returns latest CSV path.
 #' @export

@@ -9,7 +9,7 @@
 #' @param groq.API Optional 'Groq' API key.
 #' @param anthropic.API Optional 'Anthropic' API key.
 #'
-#' @return Invisibly returns a named logical vector showing which keys are set.
+#' @return A data frame or list returned by the AIGRA tabular generation backend.
 #' @examples
 #' keys <- aigra_set_api_keys()
 #' is.logical(keys)
@@ -159,7 +159,7 @@ aigra_set_api_keys <- function(
 #'
 #' Prints a short guide for configuring the external 'AIGRA' backend.
 #'
-#' @return Invisibly returns NULL.
+#' @return A data frame or list returned by the AIGRA tabular generation backend.
 #' @examples
 #' aigra_backend_help()
 #' @export
@@ -185,51 +185,70 @@ aigra_backend_help <- function() {
 }
 
 
-#' Generate Assessment Item Clones with Simplified API-Key Handling
+#' Generate AIGRA items from a data frame
 #'
-#' A user-friendly wrapper around [aigra_generate_tabular_items()] that allows
-#' users to provide provider API keys directly in R.
+#' This user-facing wrapper accepts an AIGRA tabular item bank that has already
+#' been loaded into R as a data frame. To use CSV or XLSX files, first call
+#' `aigra_read_template()` and pass the resulting data frame to this function.
 #'
-#' @param file_path Path to the item-bank template file.
-#' @param model Model name or alias.
-#' @param provider Provider name. Use `"auto"` to infer from model or API key.
-#' @param gemini.API Optional 'Gemini' API key.
-#' @param openai.API Optional 'OpenAI' API key.
-#' @param groq.API Optional 'Groq' API key.
-#' @param anthropic.API Optional 'Anthropic' API key.
-#' @param backend_path Optional path to the external 'AIGRA_BACKEND' folder.
-#' @param ... Additional arguments passed to [aigra_generate_tabular_items()],
-#'   such as `source_language`, `target_language`, `subject`, `exam`,
-#'   `n_clones`, and `max_items`.
+#' @param data A data frame with the standard AIGRA tabular columns.
+#' @param model Model name to use.
+#' @param provider LLM provider. Use `"auto"`, `"gemini"`, `"openai"`,
+#'   `"groq"`, or `"anthropic"`, depending on the backend configuration.
+#' @param gemini.API Optional Gemini API key.
+#' @param openai.API Optional OpenAI API key.
+#' @param groq.API Optional Groq API key.
+#' @param anthropic.API Optional Anthropic API key.
+#' @param backend_path Optional path to the AIGRA Python backend.
+#' @param ... Additional arguments passed to [aigra_generate_tabular_items()].
 #'
-#' @return A data frame of generated items and review information.
-#' @examples
-#' if (interactive()) {
-#'   out <- aigra_generate_items(
-#'     file_path = "items.xlsx",
-#'     model = "sonnet",
-#'     anthropic.API = "your_key",
-#'     backend_path = "path/to/AIGRA_BACKEND",
-#'     source_language = "English",
-#'     target_language = "English",
-#'     subject = "Mathematics",
-#'     exam = "Demo",
-#'     n_clones = 1,
-#'     max_items = 2
-#'   )
-#' }
+#' @return A data frame or list returned by the AIGRA tabular generation backend.
 #' @export
-aigra_generate_items <- function(
-    file_path,
-    model = "gemini-3.1-pro-preview",
-    provider = "auto",
-    gemini.API = NULL,
-    openai.API = NULL,
-    groq.API = NULL,
-    anthropic.API = NULL,
-    backend_path = NULL,
-    ...
-) {
+#'
+#' @examples
+#' \dontrun{
+#' template <- aigra_read_template("template.xlsx")
+#'
+#' result <- aigra_generate_items(
+#'   data = template,
+#'   provider = "gemini",
+#'   model = "gemini-2.5-flash",
+#'   source_language = "English",
+#'   target_language = "English",
+#'   n_clones = 1,
+#'   max_items = 1
+#' )
+#' }
+aigra_generate_items <- function(data,
+                                 model = "gemini-3.1-pro-preview",
+                                 provider = "auto",
+                                 gemini.API = NULL,
+                                 openai.API = NULL,
+                                 groq.API = NULL,
+                                 anthropic.API = NULL,
+                                 backend_path = NULL,
+                                 ...) {
+
+  if (missing(data) || is.null(data)) {
+    stop(
+      "Please supply `data` as a data frame. Use aigra_read_template() to read CSV or XLSX files first.",
+      call. = FALSE
+    )
+  }
+
+  data <- .aigra_validate_tabular_data(data)
+
+  file_path <- .aigra_write_temp_utf8_csv(data)
+  on.exit(unlink(file_path), add = TRUE)
+
+  if (!is.null(backend_path)) {
+    Sys.setenv(AIGRA_BACKEND_PATH = backend_path)
+
+    if (exists("aigra_set_backend", mode = "function")) {
+      try(aigra_set_backend(backend_path), silent = TRUE)
+    }
+  }
+
   aigra_set_api_keys(
     gemini.API = gemini.API,
     openai.API = openai.API,
@@ -237,7 +256,7 @@ aigra_generate_items <- function(
     anthropic.API = anthropic.API
   )
 
-  provider <- .aigra_detect_provider(
+  detected_provider <- .aigra_detect_provider(
     provider = provider,
     model = model,
     gemini.API = gemini.API,
@@ -246,14 +265,29 @@ aigra_generate_items <- function(
     anthropic.API = anthropic.API
   )
 
-  model <- .aigra_normalize_model(model = model, provider = provider)
+  normalized_model <- .aigra_normalize_model(
+    model = model,
+    provider = detected_provider
+  )
 
   .aigra_check_backend_message(backend_path = backend_path)
 
-  aigra_generate_tabular_items(
-    file_path = file_path,
-    provider = provider,
-    model = model,
-    ...
+  message("AIGRA received data frame with ", nrow(data), " row(s).")
+  message("Temporary UTF-8 generation file: ", file_path)
+
+  extra_args <- list(...)
+  extra_args$data <- NULL
+  extra_args$file_path <- NULL
+  extra_args$backend_path <- NULL
+
+  call_args <- c(
+    list(
+      file_path = file_path,
+      provider = detected_provider,
+      model = normalized_model
+    ),
+    extra_args
   )
+
+  do.call(aigra_generate_tabular_items, call_args)
 }

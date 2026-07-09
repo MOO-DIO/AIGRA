@@ -14,7 +14,7 @@ aigra_translate_diagram_prompts(
 \arguments{
 \item{result}{A data frame returned by AIGRA.}
 
-\item{target_language}{Target language for visible diagram labels.}
+\item{target_language}{Target language for translated diagram prompts.}
 
 \item{provider}{Text LLM provider.}
 

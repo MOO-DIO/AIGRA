@@ -5,16 +5,16 @@
 #' @param file_path Path to CSV or Excel item bank.
 #' @param provider LLM provider, such as "gemini", "openai", "groq", or "anthropic".
 #' @param model Provider model name.
-#' @param source_language Language of the source item bank.
-#' @param target_language Language for generated items.
-#' @param review_language Language for review comments.
-#' @param subject Subject name.
-#' @param exam Examination or item-bank name.
-#' @param n_clones Number of clones per source item.
-#' @param max_items Maximum number of valid source items to process. Use NULL to process all valid items.
 #' @param output_dir Optional output directory.
-#' @param read_csv If TRUE, returns the CSV output as a data frame.
 #'
+#' @param source_language Source language of the input item bank.
+#' @param target_language Target language for generated items.
+#' @param review_language Language to use for automated review feedback.
+#' @param subject Subject area for item generation.
+#' @param exam Examination, assessment, or project name.
+#' @param n_clones Number of clones to generate per source item.
+#' @param max_items Maximum number of source items to process.
+#' @param read_csv Logical; if TRUE, read and return the generated CSV output when available.
 #' @return A data frame if read_csv is TRUE; otherwise invisibly returns the CSV path.
 #' @export
 aigra_generate_tabular_items <- function(

@@ -5,8 +5,8 @@
 #' the target language for visible labels.
 #'
 #' @param result A data frame returned by AIGRA.
-#' @param target_language Target language for visible diagram text labels.
 #'
+#' @param target_language Target language for localized diagram prompts.
 #' @return Updated result data frame.
 #' @export
 aigra_localize_diagram_prompts <- function(

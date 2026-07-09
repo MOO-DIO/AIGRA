@@ -26,23 +26,23 @@ aigra_generate_tabular_items(
 
 \item{model}{Provider model name.}
 
-\item{source_language}{Language of the source item bank.}
+\item{source_language}{Source language of the input item bank.}
 
-\item{target_language}{Language for generated items.}
+\item{target_language}{Target language for generated items.}
 
-\item{review_language}{Language for review comments.}
+\item{review_language}{Language to use for automated review feedback.}
 
-\item{subject}{Subject name.}
+\item{subject}{Subject area for item generation.}
 
-\item{exam}{Examination or item-bank name.}
+\item{exam}{Examination, assessment, or project name.}
 
-\item{n_clones}{Number of clones per source item.}
+\item{n_clones}{Number of clones to generate per source item.}
 
-\item{max_items}{Maximum number of valid source items to process. Use NULL to process all valid items.}
+\item{max_items}{Maximum number of source items to process.}
 
 \item{output_dir}{Optional output directory.}
 
-\item{read_csv}{If TRUE, returns the CSV output as a data frame.}
+\item{read_csv}{Logical; if TRUE, read and return the generated CSV output when available.}
 }
 \value{
 A data frame if read_csv is TRUE; otherwise invisibly returns the CSV path.

@@ -9,7 +9,7 @@ aigra_localize_diagram_prompts(result, target_language = "English")
 \arguments{
 \item{result}{A data frame returned by AIGRA.}
 
-\item{target_language}{Target language for visible diagram text labels.}
+\item{target_language}{Target language for localized diagram prompts.}
 }
 \value{
 Updated result data frame.

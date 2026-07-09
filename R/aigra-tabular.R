@@ -4,10 +4,10 @@
 #' Parses a CSV or Excel item bank directly from the supplied file path.
 #'
 #' @param file_path Path to CSV or Excel item bank.
-#' @param source_language Default source language if the file does not contain source_language.
-#' @param subject Default subject if the file does not contain subject.
-#' @param exam Default exam name if the file does not contain exam.
 #'
+#' @param source_language Source language of the input tabular item bank.
+#' @param subject Subject area of the assessment items.
+#' @param exam Examination, assessment, or project name.
 #' @return A data frame of parsed assessment items.
 #' @export
 aigra_parse_tabular_items <- function(

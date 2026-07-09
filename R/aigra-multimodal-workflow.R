@@ -11,17 +11,17 @@
 #' @param model Text-generation model.
 #' @param image_provider Image-generation provider.
 #' @param image_model Image-generation model.
-#' @param source_language Source item language.
-#' @param target_language Target generated item language.
-#' @param subject Subject name.
-#' @param exam Exam or item-bank name.
-#' @param n_clones Number of clones per item.
-#' @param max_items Maximum source items to process. Use NULL for all.
 #' @param max_images Maximum diagrams to generate. Use NULL for all generated rows.
 #' @param write_reports If TRUE, writes quality and administration HTML reports.
 #' @param include_key If TRUE, include answer key in administration HTML.
 #' @param only_accepted If TRUE, administration HTML includes only ok/edited rows.
 #'
+#' @param source_language Source language of the input item bank.
+#' @param target_language Target language for generated items.
+#' @param subject Subject area for item generation.
+#' @param exam Examination, assessment, or project name.
+#' @param n_clones Number of clones to generate per source item.
+#' @param max_items Maximum number of source items to process.
 #' @return A list containing result, result_with_diagrams, report_path, admin_file, and student_file.
 #' @export
 aigra_generate_multimodal_tabular_items <- function(

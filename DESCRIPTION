@@ -1,6 +1,6 @@
 Package: AIGRA
 Title: Agentic Item Generation, Review, and Analysis
-Version: 0.1.2
+Version: 0.2.0
 Authors@R: 
     person(
         given = "Moses O.",

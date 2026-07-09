@@ -7,7 +7,7 @@
 aigra_backend_help()
 }
 \value{
-Invisibly returns NULL.
+A data frame or list returned by the AIGRA tabular generation backend.
 }
 \description{
 Prints a short guide for configuring the external 'AIGRA' backend.

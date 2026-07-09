@@ -33,17 +33,17 @@ aigra_generate_multimodal_tabular_items(
 
 \item{image_model}{Image-generation model.}
 
-\item{source_language}{Source item language.}
+\item{source_language}{Source language of the input item bank.}
 
-\item{target_language}{Target generated item language.}
+\item{target_language}{Target language for generated items.}
 
-\item{subject}{Subject name.}
+\item{subject}{Subject area for item generation.}
 
-\item{exam}{Exam or item-bank name.}
+\item{exam}{Examination, assessment, or project name.}
 
-\item{n_clones}{Number of clones per item.}
+\item{n_clones}{Number of clones to generate per source item.}
 
-\item{max_items}{Maximum source items to process. Use NULL for all.}
+\item{max_items}{Maximum number of source items to process.}
 
 \item{max_images}{Maximum diagrams to generate. Use NULL for all generated rows.}
 

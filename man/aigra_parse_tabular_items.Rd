@@ -14,11 +14,11 @@ aigra_parse_tabular_items(
 \arguments{
 \item{file_path}{Path to CSV or Excel item bank.}
 
-\item{source_language}{Default source language if the file does not contain source_language.}
+\item{source_language}{Source language of the input tabular item bank.}
 
-\item{subject}{Default subject if the file does not contain subject.}
+\item{subject}{Subject area of the assessment items.}
 
-\item{exam}{Default exam name if the file does not contain exam.}
+\item{exam}{Examination, assessment, or project name.}
 }
 \value{
 A data frame of parsed assessment items.
